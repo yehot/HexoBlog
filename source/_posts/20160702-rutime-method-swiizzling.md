@@ -1,0 +1,242 @@
+---
+title: runtime入门系列之——方法替换
+date: 2016-07-02 18:58:37
+tags: runtime swizzling
+---
+
+作为一个有2年以上 iOS 开发经验的程序猿，如果说自己不知道 runtime 简直不好意思跟别人打招呼了。
+
+但是大部分初级 iOS 程序猿在实际项目开发中，很少有机会需要主动用到 runtime 相关的东西。最近面试的不少同学，当我问"请说说你对 iOS 中 runtime 的理解"就懵逼了。
+
+其实作为小面试官，我也是很尴尬的。你简历上期望薪资都写 15k+ 了，那总不能指望面试一个小时，我都只跟你聊如何写界面吧？
+
+---
+
+我觉得当我问面试者：
+> "什么是 runtime ?"
+
+这个问题时，如果能在以下三个方面做个简单的阐述，我觉得就基本合格了。
+
+### 一、runtime 是什么？
+
+- 首先 OC 是 C 语言的超集，因为 runtime 这个库使得C语言有了面向对象的能力：
+OC 对象可以用C语言中的结构体表示，而方法可以用C函数来实现，这些结构体和函数被 runtime 函数封装后，我们就可以在程序运行时创建，检查，修改类、对象和它们的方法了。
+
+- OC 是一门动态语言，它将很多静态语言在编译和链接时期做的事放到了运行时来处理。
+这种特性意味着Objective-C不仅需要一个编译器，还需要一个运行时系统来执行编译的代码。这个运行时系统即Objc Runtime。Objc Runtime基本上是用C和汇编写的。
+[参考 南峰子： Objective-C Runtime 运行时之一：类与对象](http://southpeak.github.io/blog/2014/10/25/objective-c-runtime-yun-xing-shi-zhi-lei-yu-dui-xiang/)
+
+### 二、runtime 有什么用？
+- 我们写的代码在程序运行过程中都会被转化成 runtime 的C代码执行
+OC的类、对象、方法在运行时，最终都转换成 C语言的 结构体、函数来执行。
+     可以在程序运行时创建，检查，修改类、对象和它们的方法。
+
+- 常用于：
+      - 获取类的方法列表/参数列表；
+      - 方法调用；
+      - 方法拦截、动态添加方法；
+      - 方法替换： method swizzling
+      - 关联对象，动态添加属性；
+
+### 三、runtime 怎么用？
+
+> 或者，说说你具体在项目中哪些地方用到过 runtime ？
+
+- runtime 的 API 提供了大量的函数来操作类和对象，如：
+    - 动态替换方法的实现、方法拦截：`class_replaceMethod`
+    - 获取对象的属性列表：`class_copyIvarList`
+    - 获取对象的方法列表： `class_copyMethodList`
+    - 动态添加属性: `class_addProperty`
+    - 动态添加方法： `class_addMethod`
+    - 获取方法名： `method_getName`
+    - 获取方法的实现： `class_getMethodImplementation`
+
+- 具体应用：
+    - 给 category 添加属性： 
+        `给 UIAlertView 加 block 回调`
+    - 给系统的方法做替换，插入代码： 
+        `替换 viewDidLoad 方法的实现，NSLog 出每一个出现页面的类名`
+
+---
+
+## 「方法替换」demo:
+
+声明一个`People`类
+```
+@interface People : NSObject
+- (void)run;
+@end
+
+@implementation People
+- (void)run {
+    NSLog(@"People run");
+}
+@end
+```
+
+实现替换的方法
+
+```
+@implementation ViewController
+
+// demo 是在当前类直接定义了一个方法，也可以用代码动态生成一个方法
+- (void)runFast {
+    NSLog(@"People run fast");
+}
+
+/
+ *  替换 People 类中 run 方法的实现
+ */
+- (void)replacePeopleRunMethod {
+    
+    Class peopleClass = NSClassFromString(@"People");
+    SEL peopleRunSel = @selector(run);
+    Method methodRun = class_getInstanceMethod(peopleClass, peopleRunSel);
+    // 获取 run 方法的参数 （包括了 parameter and return types）
+    char *typeDescription = (char *)method_getTypeEncoding(methodRun);
+    
+    // 获取 runFast 方法的实现
+    IMP runFastImp = class_getMethodImplementation([self class], @selector(runFast));
+    
+    // 给 People 新增 runFast 方法，并指向的当前类中 runFast 的实现
+    class_addMethod(peopleClass, @selector(runFast), runFastImp, typeDescription);
+    
+    // 替换 run 方法为 runFast 方法
+    class_replaceMethod(peopleClass, peopleRunSel, runFastImp, typeDescription);
+}
+@end
+```
+
+调用
+
+```
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    People *p1 = [[People alloc] init];
+    [p1 run];
+    
+    [self replacePeopleRunMethod];
+    [p1 run];
+}
+```
+
+输出如下：
+```
+2016-07-02 18:11:26.707 RuntimeDemo[26972:1726702] People run
+2016-07-02 18:11:26.712 RuntimeDemo[26972:1726702] People run fast
+```
+> 注意，这里的方法替换是永久性的，只要程序不退出，以后无论在任何地方调用`[p1 run]`都只会调用`runFast`的实现。
+
+> 而且，method swizzling 方法并不适合写在这里，通常写在 `+ (void)load `方法中，并且用 `dispatch_once` 来进行调度。至于为什么，可以参考[Objective-C +load vs +initialize](http://blog.leichunfeng.com/blog/2015/05/02/objective-c-plus-load-vs-plus-initialize/)。
+
+相关注释：
+
+```
+    // Method : 包含了一个方法的  方法名 + 实现 + 参数个数及类型 + 返回值个数及类型 等信息
+    // class_getInstanceMethod : 通过类名 + 方法名 获取一个 Method
+    // class_getMethodImplementation: 类名 + 方法名
+    // class_addMethod: 类名 + 方法名 + 方法实现 + 参数信息
+    // class_replaceMethod : 类型 + 替换的方法名 + 替换后的实现 + 参数信息
+```
+
+以上 demo 只是简单的在当前类`ViewController`中，定义了一个`runFast`方法，并用其替换了`People` 类中`run`方法的实现。
+
+这里需要先用 `class_addMethod`，而不是直接用`class_replaceMethod`，是为了做一层保护，因为如果 `People` 类没有实现 `run` 方法 ，但其父类实现了，那 class_getInstanceMethod 会返回父类的方法。
+     这样 method_exchangeImplementations 替换的是父类的那个方法，这当然不是你想要的。
+     所以我们先尝试添加 `runFast`方法，如果已经存在，就用 `method_exchangeImplementations` 把原方法的实现跟新的方法实现给交换掉。否则用`class_replaceMethod`来替换。
+
+---
+
+### 「方法替换」常规写法
+
+上文 demo 中的写法，只是实现了方法替换的效果，但真正在项目中用的时候会存在一些问题，如调用时机、调用次数、替换失败等问题，所以，一般实战中写法如下：
+
+```
+#import "UIViewController+Logging.h"
+#import <objc/runtime.h>
+
+@implementation UIViewController (Logging)
+
++ (void)load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class targetClass = [self class];
+        SEL originalSelector = @selector(viewDidAppear:);
+        SEL swizzledSelector = @selector(swizzled_viewDidAppear:);
+        swizzleMethod(targetClass, originalSelector, swizzledSelector);
+    });
+}
+
+void swizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector) {
+    Method originalMethod = class_getInstanceMethod(class, originalSelector);
+    Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+    
+    IMP swizzledImp = method_getImplementation(swizzledMethod);
+    char *swizzledTypes = (char *)method_getTypeEncoding(swizzledMethod);
+    
+    IMP originalImp = method_getImplementation(originalMethod);
+    
+    char *originalTypes = (char *)method_getTypeEncoding(originalMethod);
+    BOOL success = class_addMethod(class, originalSelector, swizzledImp, swizzledTypes);
+    if (success) {
+        class_replaceMethod(class, swizzledSelector, originalImp, originalTypes);
+    }else {
+        // 添加失败，表明已经有这个方法，直接交换
+        method_exchangeImplementations(originalMethod, swizzledMethod);
+    }
+}
+
+- (void)swizzled_viewDidAppear:(BOOL)animation {
+    [self swizzled_viewDidAppear:animation];
+    NSLog(@"%@ viewDidAppear", NSStringFromClass([self class]));
+}
+
+@end
+```
+---
+
+### 扩展 —— 用 Aspects 实现方法替换
+
+上边 demo 中写了一大堆 runtime 的 api 在代码里，即不好阅读，也不便于维护。
+> 这里有现成的方案：一个基于 swizzling method 的开源框架 [Aspects](https://github.com/steipete/Aspects) 。
+
+用 `Aspects` 来实现上文 demo 如下：
+
+```
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    People *p1 = [[People alloc] init];
+    [p1 run];   
+      
+    [People aspect_hookSelector:@selector(run) withOptions:AspectPositionInstead usingBlock:^(id<AspectInfo> aspectInfo) {
+        NSLog(@"People aspect run fast");
+    } error:nil];
+
+    [p1 run];
+```
+
+输出：
+
+```
+2016-07-02 18:16:38.039 RuntimeDemo[26994:1730239] People run
+2016-07-02 18:16:38.043 RuntimeDemo[26994:1730239] People aspect run fast
+```
+
+需要注意的是 `Aspects` 的 `aspect_hookSelector:` 方法中，`AspectOptions`参数决定了方法替换的时机：
+
+```
+typedef NS_OPTIONS(NSUInteger, AspectOptions) {
+    AspectPositionAfter   = 0,            /// 原方法调用后 (default)
+    AspectPositionInstead = 1,            /// 完全替换原方法
+    AspectPositionBefore  = 2,            /// 原方法调用前
+    AspectOptionAutomaticRemoval = 1 << 3 /// 在执行一次替换的方法后，就移除替换效果
+    };
+```
+
+`Aspects`帮我们封装了 `method swizzling`的过程，剩下的只管用就行了。
+
+[本文 demo 代码 戳这里](https://github.com/yehot/RuntimeDemo)
+
+> 水平有限，有错误的地方，欢迎指正！
