@@ -1,0 +1,124 @@
+---
+title: 自定义可配置开关的NSLog
+date: 2015-09-09 21:55:34
+tags:
+---
+
+#自定义可配置开关的NSLog
+
+参考：[iOS自定义NSLog日志](http://www.verydemo.com/demo_c134_i22023.html)
+
+>最近公司要求封装一套打包成 .a 静态库的SDK，需要在SDK中输出一些Log信息。
+>参考友盟、JPush等SDK写法，想给Log配置一个开关，方便使用SDK时可以控制打开或关闭Log输出。
+
+***
+###以下是SDK只提供 .a 静态库时的一种解决思路：
+
+#import <Foundation/Foundation.h>
+
+
+```
+
+/**
+ *  自定义Log，可配置开关（用于替换NSLog）
+ */
+#define KDS_Log(format,...) CustomLog(__FUNCTION__,__LINE__,format,##__VA_ARGS__)
+
+/**
+ *  自定义Log
+ *  @warning 外部可直接调用 KDS_Log
+ *
+ *  @param func         方法名
+ *  @param lineNumber   行号
+ *  @param format       Log内容
+ *  @param ...          个数可变的Log参数
+ */
+void CustomLog(const char *func, int lineNumber, NSString *format, ...);
+
+/**
+ *  自定义Log类，外部控制Log开关
+ */
+@interface KDS_CustomLog : NSObject
+
+/**
+ *  Log 输出开关 (默认关闭)
+ *
+ *  @param flag 是否开启
+ */
++ (void)setLogEnable:(BOOL)flag;
+
+/**
+ *  是否开启了 Log 输出
+ *
+ *  @return Log 开关状态
+ */
++ (BOOL)logEnable;
+
+@end
+```
+
+```
+#import "KDS_CustomLog.h"
+
+// Log 开关状态，默认不输出log信息
+static BOOL KDS_Log_Switch = NO;
+
+@implementation KDS_CustomLog
+
+void CustomLog(const char *func, int lineNumber, NSString *format, ...)
+{
+    if ([KDS_CustomLog logEnable]) {  // 开启了Log
+        va_list args;
+        va_start(args, format);
+        NSString *string = [[NSString alloc] initWithFormat:format arguments:args];
+        va_end(args);
+        
+        NSString *strFormat = [NSString stringWithFormat:@"%s, Line:%i, SDK_Log:%@",func,lineNumber,string];
+        NSLog(@"%@", strFormat);
+    }
+}
+
++ (BOOL)logEnable {
+    return KDS_Log_Switch;
+}
+
++ (void)setLogEnable:(BOOL)flag {
+    KDS_Log_Switch = flag;
+}
+
+@end
+```
+
+***
+>以下是调用方式:
+
+```
+#import "KDS_CustomLog.h"
+
+- (void)logTest
+{
+    [KDS_CustomLog setLogEnable:YES];
+    KDS_Log(@"打开");
+    NSLog(@"%d",[KDS_CustomLog logEnable]);
+    
+    [KDS_CustomLog setLogEnable:NO];
+    KDS_Log(@"关闭");
+    NSLog(@"%d",[KDS_CustomLog logEnable]);
+    
+    [KDS_CustomLog setLogEnable:YES];
+    KDS_Log(@"打开");
+    NSLog(@"%d",[KDS_CustomLog logEnable]);
+}
+```
+
+***
+>和控制台输出结果:
+
+![输出结果.png](http://upload-images.jianshu.io/upload_images/332029-ca2146bba67d2629.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+***
+
+
+（如果有任何问题，欢迎指出！）
+
+***
