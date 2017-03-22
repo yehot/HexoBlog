@@ -1,0 +1,840 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="runtime swizzling," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="作为一个有2年以上 iOS 开发经验的程序猿，如果说自己不知道 runtime 简直不好意思跟别人打招呼了。
+但是大部分初级 iOS 程序猿在实际项目开发中，很少有机会需要主动用到 runtime 相关的东西。最近面试的不少同学，当我问”请说说你对 iOS 中 runtime 的理解”就懵逼了。
+其实作为小面试官，我也是很尴尬的。你简历上期望薪资都写 15k+ 了，那总不能指望面试一个小时，我都只">
+<meta property="og:type" content="article">
+<meta property="og:title" content="runtime入门系列之——方法替换">
+<meta property="og:url" content="http://yehot.github.io/2016/07/02/20160702-rutime-method-swiizzling/index.html">
+<meta property="og:site_name" content="yehot 的技术博客">
+<meta property="og:description" content="作为一个有2年以上 iOS 开发经验的程序猿，如果说自己不知道 runtime 简直不好意思跟别人打招呼了。
+但是大部分初级 iOS 程序猿在实际项目开发中，很少有机会需要主动用到 runtime 相关的东西。最近面试的不少同学，当我问”请说说你对 iOS 中 runtime 的理解”就懵逼了。
+其实作为小面试官，我也是很尴尬的。你简历上期望薪资都写 15k+ 了，那总不能指望面试一个小时，我都只">
+<meta property="og:updated_time" content="2017-03-10T05:59:37.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="runtime入门系列之——方法替换">
+<meta name="twitter:description" content="作为一个有2年以上 iOS 开发经验的程序猿，如果说自己不知道 runtime 简直不好意思跟别人打招呼了。
+但是大部分初级 iOS 程序猿在实际项目开发中，很少有机会需要主动用到 runtime 相关的东西。最近面试的不少同学，当我问”请说说你对 iOS 中 runtime 的理解”就懵逼了。
+其实作为小面试官，我也是很尴尬的。你简历上期望薪资都写 15k+ 了，那总不能指望面试一个小时，我都只">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yehot.github.io/2016/07/02/20160702-rutime-method-swiizzling/"/>
+
+
+
+
+
+  <title> runtime入门系列之——方法替换 | yehot 的技术博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yehot 的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yehot.github.io/2016/07/02/20160702-rutime-method-swiizzling/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="yehot">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yehot 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                runtime入门系列之——方法替换
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-02T18:58:37+08:00">
+                2016-07-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>作为一个有2年以上 iOS 开发经验的程序猿，如果说自己不知道 runtime 简直不好意思跟别人打招呼了。</p>
+<p>但是大部分初级 iOS 程序猿在实际项目开发中，很少有机会需要主动用到 runtime 相关的东西。最近面试的不少同学，当我问”请说说你对 iOS 中 runtime 的理解”就懵逼了。</p>
+<p>其实作为小面试官，我也是很尴尬的。你简历上期望薪资都写 15k+ 了，那总不能指望面试一个小时，我都只跟你聊如何写界面吧？</p>
+<hr>
+<p>我觉得当我问面试者：</p>
+<blockquote>
+<p>“什么是 runtime ?”</p>
+</blockquote>
+<p>这个问题时，如果能在以下三个方面做个简单的阐述，我觉得就基本合格了。</p>
+<h3 id="一、runtime-是什么？"><a href="#一、runtime-是什么？" class="headerlink" title="一、runtime 是什么？"></a>一、runtime 是什么？</h3><ul>
+<li><p>首先 OC 是 C 语言的超集，因为 runtime 这个库使得C语言有了面向对象的能力：<br>OC 对象可以用C语言中的结构体表示，而方法可以用C函数来实现，这些结构体和函数被 runtime 函数封装后，我们就可以在程序运行时创建，检查，修改类、对象和它们的方法了。</p>
+</li>
+<li><p>OC 是一门动态语言，它将很多静态语言在编译和链接时期做的事放到了运行时来处理。<br>这种特性意味着Objective-C不仅需要一个编译器，还需要一个运行时系统来执行编译的代码。这个运行时系统即Objc Runtime。Objc Runtime基本上是用C和汇编写的。<br><a href="http://southpeak.github.io/blog/2014/10/25/objective-c-runtime-yun-xing-shi-zhi-lei-yu-dui-xiang/" target="_blank" rel="external">参考 南峰子： Objective-C Runtime 运行时之一：类与对象</a></p>
+</li>
+</ul>
+<h3 id="二、runtime-有什么用？"><a href="#二、runtime-有什么用？" class="headerlink" title="二、runtime 有什么用？"></a>二、runtime 有什么用？</h3><ul>
+<li><p>我们写的代码在程序运行过程中都会被转化成 runtime 的C代码执行<br>OC的类、对象、方法在运行时，最终都转换成 C语言的 结构体、函数来执行。<br>   可以在程序运行时创建，检查，修改类、对象和它们的方法。</p>
+</li>
+<li><p>常用于：</p>
+<pre><code>- 获取类的方法列表/参数列表；
+- 方法调用；
+- 方法拦截、动态添加方法；
+- 方法替换： method swizzling
+- 关联对象，动态添加属性；
+</code></pre></li>
+</ul>
+<h3 id="三、runtime-怎么用？"><a href="#三、runtime-怎么用？" class="headerlink" title="三、runtime 怎么用？"></a>三、runtime 怎么用？</h3><blockquote>
+<p>或者，说说你具体在项目中哪些地方用到过 runtime ？</p>
+</blockquote>
+<ul>
+<li><p>runtime 的 API 提供了大量的函数来操作类和对象，如：</p>
+<ul>
+<li>动态替换方法的实现、方法拦截：<code>class_replaceMethod</code></li>
+<li>获取对象的属性列表：<code>class_copyIvarList</code></li>
+<li>获取对象的方法列表： <code>class_copyMethodList</code></li>
+<li>动态添加属性: <code>class_addProperty</code></li>
+<li>动态添加方法： <code>class_addMethod</code></li>
+<li>获取方法名： <code>method_getName</code></li>
+<li>获取方法的实现： <code>class_getMethodImplementation</code></li>
+</ul>
+</li>
+<li><p>具体应用：</p>
+<ul>
+<li>给 category 添加属性：<br>  <code>给 UIAlertView 加 block 回调</code></li>
+<li>给系统的方法做替换，插入代码：<br>  <code>替换 viewDidLoad 方法的实现，NSLog 出每一个出现页面的类名</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="「方法替换」demo"><a href="#「方法替换」demo" class="headerlink" title="「方法替换」demo:"></a>「方法替换」demo:</h2><p>声明一个<code>People</code>类<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@interface People : NSObject</div><div class="line">- (void)run;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation People</div><div class="line">- (void)run &#123;</div><div class="line">    NSLog(@&quot;People run&quot;);</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<p>实现替换的方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">@implementation ViewController</div><div class="line"></div><div class="line">// demo 是在当前类直接定义了一个方法，也可以用代码动态生成一个方法</div><div class="line">- (void)runFast &#123;</div><div class="line">    NSLog(@&quot;People run fast&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">/</div><div class="line"> *  替换 People 类中 run 方法的实现</div><div class="line"> */</div><div class="line">- (void)replacePeopleRunMethod &#123;</div><div class="line">    </div><div class="line">    Class peopleClass = NSClassFromString(@&quot;People&quot;);</div><div class="line">    SEL peopleRunSel = @selector(run);</div><div class="line">    Method methodRun = class_getInstanceMethod(peopleClass, peopleRunSel);</div><div class="line">    // 获取 run 方法的参数 （包括了 parameter and return types）</div><div class="line">    char *typeDescription = (char *)method_getTypeEncoding(methodRun);</div><div class="line">    </div><div class="line">    // 获取 runFast 方法的实现</div><div class="line">    IMP runFastImp = class_getMethodImplementation([self class], @selector(runFast));</div><div class="line">    </div><div class="line">    // 给 People 新增 runFast 方法，并指向的当前类中 runFast 的实现</div><div class="line">    class_addMethod(peopleClass, @selector(runFast), runFastImp, typeDescription);</div><div class="line">    </div><div class="line">    // 替换 run 方法为 runFast 方法</div><div class="line">    class_replaceMethod(peopleClass, peopleRunSel, runFastImp, typeDescription);</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<p>调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line"></div><div class="line">    People *p1 = [[People alloc] init];</div><div class="line">    [p1 run];</div><div class="line">    </div><div class="line">    [self replacePeopleRunMethod];</div><div class="line">    [p1 run];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2016-07-02 18:11:26.707 RuntimeDemo[26972:1726702] People run</div><div class="line">2016-07-02 18:11:26.712 RuntimeDemo[26972:1726702] People run fast</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注意，这里的方法替换是永久性的，只要程序不退出，以后无论在任何地方调用<code>[p1 run]</code>都只会调用<code>runFast</code>的实现。</p>
+<p>而且，method swizzling 方法并不适合写在这里，通常写在 <code>+ (void)load</code>方法中，并且用 <code>dispatch_once</code> 来进行调度。至于为什么，可以参考<a href="http://blog.leichunfeng.com/blog/2015/05/02/objective-c-plus-load-vs-plus-initialize/" target="_blank" rel="external">Objective-C +load vs +initialize</a>。</p>
+</blockquote>
+<p>相关注释：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">    // Method : 包含了一个方法的  方法名 + 实现 + 参数个数及类型 + 返回值个数及类型 等信息</div><div class="line">    // class_getInstanceMethod : 通过类名 + 方法名 获取一个 Method</div><div class="line">// class_getMethodImplementation: 类名 + 方法名</div><div class="line">    // class_addMethod: 类名 + 方法名 + 方法实现 + 参数信息</div><div class="line">    // class_replaceMethod : 类型 + 替换的方法名 + 替换后的实现 + 参数信息</div></pre></td></tr></table></figure>
+<p>以上 demo 只是简单的在当前类<code>ViewController</code>中，定义了一个<code>runFast</code>方法，并用其替换了<code>People</code> 类中<code>run</code>方法的实现。</p>
+<p>这里需要先用 <code>class_addMethod</code>，而不是直接用<code>class_replaceMethod</code>，是为了做一层保护，因为如果 <code>People</code> 类没有实现 <code>run</code> 方法 ，但其父类实现了，那 class_getInstanceMethod 会返回父类的方法。<br>     这样 method_exchangeImplementations 替换的是父类的那个方法，这当然不是你想要的。<br>     所以我们先尝试添加 <code>runFast</code>方法，如果已经存在，就用 <code>method_exchangeImplementations</code> 把原方法的实现跟新的方法实现给交换掉。否则用<code>class_replaceMethod</code>来替换。</p>
+<hr>
+<h3 id="「方法替换」常规写法"><a href="#「方法替换」常规写法" class="headerlink" title="「方法替换」常规写法"></a>「方法替换」常规写法</h3><p>上文 demo 中的写法，只是实现了方法替换的效果，但真正在项目中用的时候会存在一些问题，如调用时机、调用次数、替换失败等问题，所以，一般实战中写法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line">#import &quot;UIViewController+Logging.h&quot;</div><div class="line">#import &lt;objc/runtime.h&gt;</div><div class="line"></div><div class="line">@implementation UIViewController (Logging)</div><div class="line"></div><div class="line">+ (void)load &#123;</div><div class="line">    static dispatch_once_t onceToken;</div><div class="line">    dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">        Class targetClass = [self class];</div><div class="line">        SEL originalSelector = @selector(viewDidAppear:);</div><div class="line">        SEL swizzledSelector = @selector(swizzled_viewDidAppear:);</div><div class="line">        swizzleMethod(targetClass, originalSelector, swizzledSelector);</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">void swizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector) &#123;</div><div class="line">    Method originalMethod = class_getInstanceMethod(class, originalSelector);</div><div class="line">    Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);</div><div class="line">    </div><div class="line">    IMP swizzledImp = method_getImplementation(swizzledMethod);</div><div class="line">    char *swizzledTypes = (char *)method_getTypeEncoding(swizzledMethod);</div><div class="line">    </div><div class="line">    IMP originalImp = method_getImplementation(originalMethod);</div><div class="line">    </div><div class="line">    char *originalTypes = (char *)method_getTypeEncoding(originalMethod);</div><div class="line">    BOOL success = class_addMethod(class, originalSelector, swizzledImp, swizzledTypes);</div><div class="line">    if (success) &#123;</div><div class="line">        class_replaceMethod(class, swizzledSelector, originalImp, originalTypes);</div><div class="line">    &#125;else &#123;</div><div class="line">        // 添加失败，表明已经有这个方法，直接交换</div><div class="line">        method_exchangeImplementations(originalMethod, swizzledMethod);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)swizzled_viewDidAppear:(BOOL)animation &#123;</div><div class="line">    [self swizzled_viewDidAppear:animation];</div><div class="line">    NSLog(@&quot;%@ viewDidAppear&quot;, NSStringFromClass([self class]));</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
+<hr>
+<h3 id="扩展-——-用-Aspects-实现方法替换"><a href="#扩展-——-用-Aspects-实现方法替换" class="headerlink" title="扩展 —— 用 Aspects 实现方法替换"></a>扩展 —— 用 Aspects 实现方法替换</h3><p>上边 demo 中写了一大堆 runtime 的 api 在代码里，即不好阅读，也不便于维护。</p>
+<blockquote>
+<p>这里有现成的方案：一个基于 swizzling method 的开源框架 <a href="https://github.com/steipete/Aspects" target="_blank" rel="external">Aspects</a> 。</p>
+</blockquote>
+<p>用 <code>Aspects</code> 来实现上文 demo 如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    </div><div class="line">    People *p1 = [[People alloc] init];</div><div class="line">    [p1 run];   </div><div class="line">      </div><div class="line">    [People aspect_hookSelector:@selector(run) withOptions:AspectPositionInstead usingBlock:^(id&lt;AspectInfo&gt; aspectInfo) &#123;</div><div class="line">        NSLog(@&quot;People aspect run fast&quot;);</div><div class="line">    &#125; error:nil];</div><div class="line"></div><div class="line">    [p1 run];</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2016-07-02 18:16:38.039 RuntimeDemo[26994:1730239] People run</div><div class="line">2016-07-02 18:16:38.043 RuntimeDemo[26994:1730239] People aspect run fast</div></pre></td></tr></table></figure>
+<p>需要注意的是 <code>Aspects</code> 的 <code>aspect_hookSelector:</code> 方法中，<code>AspectOptions</code>参数决定了方法替换的时机：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">typedef NS_OPTIONS(NSUInteger, AspectOptions) &#123;</div><div class="line">    AspectPositionAfter   = 0,            /// 原方法调用后 (default)</div><div class="line">    AspectPositionInstead = 1,            /// 完全替换原方法</div><div class="line">    AspectPositionBefore  = 2,            /// 原方法调用前</div><div class="line">    AspectOptionAutomaticRemoval = 1 &lt;&lt; 3 /// 在执行一次替换的方法后，就移除替换效果</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+<p><code>Aspects</code>帮我们封装了 <code>method swizzling</code>的过程，剩下的只管用就行了。</p>
+<p><a href="https://github.com/yehot/RuntimeDemo" target="_blank" rel="external">本文 demo 代码 戳这里</a></p>
+<blockquote>
+<p>水平有限，有错误的地方，欢迎指正！</p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/runtime-swizzling/" rel="tag"># runtime swizzling</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/31/20160531-ios-module-investigation/" rel="next" title="iOS组件化方案调研">
+                <i class="fa fa-chevron-left"></i> iOS组件化方案调研
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/18/20161218-sina-sae-node-js-web-tutorial/" rel="prev" title="新浪云搭建简单的 Node.js Web 应用">
+                新浪云搭建简单的 Node.js Web 应用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.JPG"
+               alt="yehot" />
+          <p class="site-author-name" itemprop="name">yehot</p>
+           
+              <p class="site-description motion-element" itemprop="description">野生iOS程序猿</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yehot" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/d0002bd5b272" target="_blank" title="简书">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  简书
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="[object Object]" title="0" target="_blank">0</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、runtime-是什么？"><span class="nav-number">1.</span> <span class="nav-text">一、runtime 是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、runtime-有什么用？"><span class="nav-number">2.</span> <span class="nav-text">二、runtime 有什么用？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、runtime-怎么用？"><span class="nav-number">3.</span> <span class="nav-text">三、runtime 怎么用？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#「方法替换」demo"><span class="nav-number"></span> <span class="nav-text">「方法替换」demo:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#「方法替换」常规写法"><span class="nav-number">1.</span> <span class="nav-text">「方法替换」常规写法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展-——-用-Aspects-实现方法替换"><span class="nav-number">2.</span> <span class="nav-text">扩展 —— 用 Aspects 实现方法替换</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yehot</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

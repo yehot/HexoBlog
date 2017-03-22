@@ -1,0 +1,850 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CocoaPods," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="为什么iOS项目中应该使用CocoaPods作为第三方依赖管理工具？
+
+
+目录：
+
+从一个bug说起
+分析需求及解决方案
+确定方案
+CocoaPods学习资料
+
+
+#一、从一个bug说起：1、公司的项目里统一使用SVG格式的图片；2、GitHub上只有一个star数超过一千的SVG解析库，叫SVGKit。（对，就是这个坑爹的库）         坑1： 这个库一直使用非ARC，有100多个类；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为什么iOS项目应该用CocoaPods">
+<meta property="og:url" content="http://yehot.github.io/2015/11/28/20151128-why-cocoaPods/index.html">
+<meta property="og:site_name" content="yehot 的技术博客">
+<meta property="og:description" content="为什么iOS项目中应该使用CocoaPods作为第三方依赖管理工具？
+
+
+目录：
+
+从一个bug说起
+分析需求及解决方案
+确定方案
+CocoaPods学习资料
+
+
+#一、从一个bug说起：1、公司的项目里统一使用SVG格式的图片；2、GitHub上只有一个star数超过一千的SVG解析库，叫SVGKit。（对，就是这个坑爹的库）         坑1： 这个库一直使用非ARC，有100多个类；">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/332029-76f5038a773b7863.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/332029-41102bc3ee4544b1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/332029-e085b55b305df854.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/332029-83821f8d987a4e16.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/332029-a4084793b6c2f4ef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/332029-9293ed3a288b838e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/332029-22cd97e2d756cb04.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/332029-4e55d2d3a6b9d29f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-03-22T16:51:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="为什么iOS项目应该用CocoaPods">
+<meta name="twitter:description" content="为什么iOS项目中应该使用CocoaPods作为第三方依赖管理工具？
+
+
+目录：
+
+从一个bug说起
+分析需求及解决方案
+确定方案
+CocoaPods学习资料
+
+
+#一、从一个bug说起：1、公司的项目里统一使用SVG格式的图片；2、GitHub上只有一个star数超过一千的SVG解析库，叫SVGKit。（对，就是这个坑爹的库）         坑1： 这个库一直使用非ARC，有100多个类；">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/332029-76f5038a773b7863.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yehot.github.io/2015/11/28/20151128-why-cocoaPods/"/>
+
+
+
+
+
+  <title> 为什么iOS项目应该用CocoaPods | yehot 的技术博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yehot 的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yehot.github.io/2015/11/28/20151128-why-cocoaPods/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="yehot">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yehot 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                为什么iOS项目应该用CocoaPods
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-28T16:02:56+08:00">
+                2015-11-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS组件化/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS组件化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>为什么iOS项目中应该使用CocoaPods作为第三方依赖管理工具？</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/332029-76f5038a773b7863.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<blockquote>
+<p><strong>目录：</strong></p>
+<ul>
+<li>从一个bug说起</li>
+<li>分析需求及解决方案</li>
+<li>确定方案</li>
+<li>CocoaPods学习资料</li>
+</ul>
+</blockquote>
+<p>#一、从一个bug说起：<br>1、公司的项目里统一使用SVG格式的图片；<br>2、GitHub上只有一个star数超过一千的SVG解析库，叫SVGKit。（对，就是这个坑爹的库）<br>         <strong>坑1：</strong> 这个库一直使用非ARC，有100多个类；<br>         <strong>坑2：</strong> 这个库还依赖另外一个库CocoaLumberjack；<br>         <strong>坑3：</strong> 把这个库配置到项目中就会报一种错误：<br><img src="http://upload-images.jianshu.io/upload_images/332029-41102bc3ee4544b1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>3、公司的项目是直接以源码的形式使用的该库。<br>        结果就是 <strong>Build Phase</strong> 中成了这样：<br>   （我不知道当初加这些 -fno-objc-arc 标记的人是否崩溃，我光看着就觉得淡淡的忧桑：这么多得加多久？加漏了或者多加了，都是坑。）<br><img src="http://upload-images.jianshu.io/upload_images/332029-e085b55b305df854.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>4、因为用的源码，项目里的SVGKit版本很久都不会更新。导致在iPhone6S以上设备时，由于旧版本的库没有适配6S，必崩。现在必须要更新到这个库的最新版本。</p>
+<p>#<strong>二、解决方案的探索：</strong></p>
+<p>##方案一：</p>
+<blockquote>
+<p><strong>用最新源码替换掉旧版源码文件</strong><br>  问题：1、类文件太多，麻烦，容易出错；<br>     2、还是会有大量的 -fno-objc-arc 标记，很烦；<br>       结论：<strong>否决</strong></p>
+</blockquote>
+<p>##方案二：</p>
+<blockquote>
+<p><strong>SVGKit作者推荐——静态库</strong>（该库的GitHub页面也只介绍了这一种用法）<br>  问题：1、只有.h 头文件，出错没法定位和修改。<br>     2、静态库里使用了category必须要加 -ObjC 标记。<br>     3、静态库.a文件需要区分device版本和simulator版本，或者合并后使用。<br>  结论：<strong>否决</strong></p>
+</blockquote>
+<p>关于<strong>问题2</strong>这里要解释下，本来是没什么问题的，但我不幸遇到了<strong>这个坑</strong>：<br>  1、静态库里如果使用了 <strong>category</strong>，需要加 <strong>-ObjC</strong> 标记。否则在使用的时会崩溃：<br><img src="http://upload-images.jianshu.io/upload_images/332029-83821f8d987a4e16.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>  2、当时花了好久没解决这个问题的原因是，我记得自己设置了呀。<br>     后来才想起来为毛还是崩，这是我们的项目target，你们感受下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/332029-a4084793b6c2f4ef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>    有任何一个target忘了设置，就又埋了个坑。<br>  3、关于 <strong>为什么要加 -ObjC 标记</strong> 的问题，以前是有查过资料的，这里完全是因为target太多遗漏导致的。</p>
+<blockquote>
+<p>####笔记如下：  <br><strong>-ObjC 标记的作用:</strong></p>
+<ul>
+<li>用到一个第三方库，这个库的使用向导里面特别说明，在添加完该库后，需要在Xcode的Build Settings下Other Linker Flags里面加入-ObjC标志。之所以使用该标志，和Objective-C的一个重要特性：类别（category)有关。根据<a href="https://developer.apple.com/library/mac/qa/qa1490/_index.html" target="_blank" rel="external">这里</a>的解释，Unix的标准静态库实现和Objective-C的动态特性之间有一些冲突：Objective-C没有为每个函数（或者方法）定义链接符号，它只为每个类创建链接符号。</li>
+<li>这样当在一个静态库中使用类别来扩展已有类的时候，链接器不知道如何把类原有的方法和类别中的方法整合起来，就会导致你调用类别中的方法时，出现”selector not recognized”，也就是找不到方法定义的错误。</li>
+<li>为了解决这个问题，引入了-ObjC标志，它的作用就是将静态库中所有的和对象相关的文件都加载进来。</li>
+<li>本来这样就可以解决问题了，不过在64位的Mac系统或者iOS系统下，链接器有一个bug，会导致只包含有类别的静态库无法使用-ObjC标志来加载文件。变通方法是使用-all_load 或者-force_load标志，它们的作用都是加载静态库中所有文件，不过all_load作用于所有的库，而-force_load后面必须要指定具体的文件。</li>
+</ul>
+</blockquote>
+<p>##方案三：</p>
+<blockquote>
+<p><strong>使用 CocoaPods </strong><br>问题：作者没有说明这个库<strong>是否支持CocoaPods</strong><br>   这也是我最开始没有考虑改用 CocoaPods 的原因）</p>
+</blockquote>
+<ul>
+<li>这里提示大家，可以使用以下命令，测试某个库是否支持CocoaPods<figure class="highlight plain"><figcaption><span>pod try XXX```</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">     鉴于这里不是介绍如何使用 CocoaPods，这里只讨论下使用 CocoaPods 的好处，以及一些使用经验（我会在后文列一些 CocoaPods 的资料）。</div><div class="line"></div><div class="line">&gt;优点：</div><div class="line">1、解决了方案一中，需要在项目里 **大量标记 -fno-objc-arc **的问题：</div><div class="line">—— CocoaPods自动生成的关联库会在关联工程中自动标记好，原始项目中只管用就行</div><div class="line">2、解决了方案二中，只有.h 头文件，**没有源码**、出错没法定位和修改的问题：</div><div class="line">—— CocoaPods也是使用静态库依赖，但是保留全部.m文件</div><div class="line">3、解决了方案二中，静态库使用时的一些坑，和**需要打包.a文件的麻烦操作**。</div><div class="line">—— CocoaPods自动完成</div><div class="line">4、极大的简化了**操作**：</div><div class="line">  1&gt; cd进入.xcodeproj文件所在的目录</div><div class="line">  ```$ pod init</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>  2&gt; 在自动生成的Podfile文件中，加入要pod的库名<br>  <figure class="highlight plain"><figcaption><span>pod install```</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">  3&gt; 搞定。</div><div class="line">5、最重要的一点：以后再遇到这次的升级第三方库版本的需求时，只需一行命令即可：</div><div class="line">  ```$ pod update</div></pre></td></tr></table></figure></p>
+<p>结论：<strong>就是这个了！</strong></p>
+<p>#确定方案</p>
+<blockquote>
+<p>CocoaPods 一劳永逸的解决了第三方库版本升级的问题。</p>
+</blockquote>
+<p>#就酱~</p>
+<p>#干货部分</p>
+<blockquote>
+<p>CocoaPods学习资料</p>
+</blockquote>
+<p>####CocoaPods入门：<br>1、<a href="http://code4app.com/article/cocoapods-install-usage" target="_blank" rel="external">CocoaPods安装和使用教程</a><br>（入门看这一篇就够了）<br>2、CocoaPods pod install/pod update<strong>更新慢的问题</strong><br>  最近使用CocoaPods来添加第三方类库，无论是执行pod install还是pod update都卡在了Analyzing dependencies不动<br>  原因在于当执行以上两个命令的时候会升级CocoaPods的spec仓库，加一个参数可以省略这一步，然后速度就会提升不少。命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">pod install --verbose --no-repo-update</div><div class="line">pod update --verbose --no-repo-update</div></pre></td></tr></table></figure></p>
+<p>3、mac升级到10.11，<strong>cocoapods没了</strong><br>  使用命令行sudo gem install cocoa pods出错，换成sudo gem install -n /usr/local/bin cocoa pods即可，详见： <a href="http://t.cn/Ry8tZAs" target="_blank" rel="external">http://t.cn/Ry8tZAs</a><br>4、<strong>使用经验：</strong><br>  1&gt; pods install 时，可以不加版本号（默认下载对应库的<strong>最新版本</strong>）<br><img src="http://upload-images.jianshu.io/upload_images/332029-9293ed3a288b838e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>  但是，下载完依赖后，最好<strong>加上版本号</strong>，避免在添加了新的库，或者pod update时，由于某些第三方库频繁升级而带来的不稳定。<br><img src="http://upload-images.jianshu.io/upload_images/332029-22cd97e2d756cb04.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>  2&gt; 多人合作的较大项目，Podfile文件可以设置权限，只由一个人来修改、添加依赖的库。<br>  3 &gt; SVN或者Git做版本管理时，不要上传 Pods 、workspace 目录：<br>（可以设置ignore）<br><img src="http://upload-images.jianshu.io/upload_images/332029-4e55d2d3a6b9d29f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>###CocoaPods高阶用法：</p>
+<p>1、<a href="http://nshipster.cn/cocoapods/#%E4%BD%BF%E7%94%A8cocoapods" target="_blank" rel="external">即使你不使用第三方库，CocoaPods仍然是一个管理代码相关性的绝佳工具</a><br>2、<a href="https://github.com/Damonvvong/DWCategory" target="_blank" rel="external">借助GitHub托管Category,利用CocoaPods集成到项目中</a><br>3、<a href="http://blog.wtlucky.com/blog/2015/02/26/create-private-podspec/" target="_blank" rel="external">Cocoapods创建私有podspec</a><br>4、<a href="http://blog.csdn.net/becomedragonlong/article/details/45933345#0-tsina-1-22915-397232" target="_blank" rel="external">写一个Pod发布到CocoaPods</a><br>5、<a href="http://supermao.cn/cocoapodsde-xie-lue-wei-gao-ji-ding-dian-de-shi-yong/" target="_blank" rel="external">CocoaPods的一些略为高级一丁点的使用</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//TODO:1、利用多个 project 做本地依赖管理</div><div class="line">       2、私有仓库的使用尝试</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CocoaPods/" rel="tag"># CocoaPods</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/09/09/20150909-custom-NSLog/" rel="next" title="自定义可配置开关的NSLog">
+                <i class="fa fa-chevron-left"></i> 自定义可配置开关的NSLog
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/29/20151129-project-contents/" rel="prev" title="iOS工程目录结构的思考">
+                iOS工程目录结构的思考 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.JPG"
+               alt="yehot" />
+          <p class="site-author-name" itemprop="name">yehot</p>
+           
+              <p class="site-description motion-element" itemprop="description">野生iOS程序猿</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yehot" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/d0002bd5b272" target="_blank" title="简书">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  简书
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="[object Object]" title="0" target="_blank">0</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yehot</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

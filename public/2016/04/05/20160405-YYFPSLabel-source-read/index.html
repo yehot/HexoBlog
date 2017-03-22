@@ -1,0 +1,803 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="学习 YYKit 代码时，发现 ibireme 在项目里加入的一个查看当前屏幕帧数的小工具，效果如下：
+
+挺实用的，实现方法也很简单，但是思路特别棒。
+####这里是Demo： YYFPSLabel
+这里我把这个小工具从 YYKit 中抽出来，在学习大牛的代码的过程中，收货了不少东西，这里做个笔记：
+###1、FPSLabel 实现思路：使用 CADisplayLink 的 timestamp 属">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS查看屏幕帧数工具--YYFPSLabel">
+<meta property="og:url" content="http://yehot.github.io/2016/04/05/20160405-YYFPSLabel-source-read/index.html">
+<meta property="og:site_name" content="yehot 的技术博客">
+<meta property="og:description" content="学习 YYKit 代码时，发现 ibireme 在项目里加入的一个查看当前屏幕帧数的小工具，效果如下：
+
+挺实用的，实现方法也很简单，但是思路特别棒。
+####这里是Demo： YYFPSLabel
+这里我把这个小工具从 YYKit 中抽出来，在学习大牛的代码的过程中，收货了不少东西，这里做个笔记：
+###1、FPSLabel 实现思路：使用 CADisplayLink 的 timestamp 属">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/332029-36fb1bdbfb423531.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/332029-6b2957fc2ff9cc8b.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/332029-90b68a2f2381e4f0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-03-22T17:09:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS查看屏幕帧数工具--YYFPSLabel">
+<meta name="twitter:description" content="学习 YYKit 代码时，发现 ibireme 在项目里加入的一个查看当前屏幕帧数的小工具，效果如下：
+
+挺实用的，实现方法也很简单，但是思路特别棒。
+####这里是Demo： YYFPSLabel
+这里我把这个小工具从 YYKit 中抽出来，在学习大牛的代码的过程中，收货了不少东西，这里做个笔记：
+###1、FPSLabel 实现思路：使用 CADisplayLink 的 timestamp 属">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/332029-36fb1bdbfb423531.gif?imageMogr2/auto-orient/strip">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yehot.github.io/2016/04/05/20160405-YYFPSLabel-source-read/"/>
+
+
+
+
+
+  <title> iOS查看屏幕帧数工具--YYFPSLabel | yehot 的技术博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yehot 的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yehot.github.io/2016/04/05/20160405-YYFPSLabel-source-read/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="yehot">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yehot 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS查看屏幕帧数工具--YYFPSLabel
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-05T23:23:36+08:00">
+                2016-04-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tool/" itemprop="url" rel="index">
+                    <span itemprop="name">Tool</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>学习 <strong><a href="https://github.com/ibireme/YYKit" target="_blank" rel="external">YYKit</a></strong> 代码时，发现 <a href="https://github.com/ibireme" target="_blank" rel="external">ibireme</a> 在项目里加入的一个查看当前屏幕帧数的小工具，效果如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/332029-36fb1bdbfb423531.gif?imageMogr2/auto-orient/strip" alt=""></p>
+<p>挺实用的，实现方法也很简单，但是思路特别棒。</p>
+<p>####这里是Demo： <strong><a href="https://github.com/yehot/YYFPSLabel" target="_blank" rel="external">YYFPSLabel</a></strong></p>
+<p>这里我把这个小工具从 YYKit 中抽出来，在学习大牛的代码的过程中，收货了不少东西，这里<strong>做个笔记</strong>：</p>
+<p>###1、FPSLabel 实现思路：<br>使用 CADisplayLink 的 timestamp 属性，配合 timer 的执行次数计算得出 FPS数，详见<a href="https://github.com/yehot/YYFPSLabel/blob/master/YYFPSLabel/YYFPSLabel/YYFPSLabel.m" target="_blank" rel="external">代码</a>。</p>
+<p>###2、NSTimer、CADisplayLink 常见问题：</p>
+<blockquote>
+<p><strong>问题1：</strong> UIScrollView 在滑动时，timer 会被暂停的问题。</p>
+</blockquote>
+<p>—— 原因：runloop mode 导致。iOS处理滑动时，mainloop 中UIScrollView的mode是 UITrackingRunLoopMode，会优先保证界面流畅，而 timer 默认的model是 NSDefaultRunLoopMode，所以会出现被暂停。<br>—— 解决办法：将timer加到 NSRunLoopCommonModes 中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">    [_link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];</div></pre></td></tr></table></figure></p>
+<p>详见：<a href="http://blog.ibireme.com/2015/05/18/runloop/" target="_blank" rel="external">深入理解RunLoop</a> 一文中关于 <a href="http://blog.ibireme.com/2015/05/18/runloop/#timer" target="_blank" rel="external">定时器</a>  和 <a href="http://blog.ibireme.com/2015/05/18/runloop/#mode" target="_blank" rel="external">RunLoop 的 Mode</a> 的部分</p>
+<blockquote>
+<p><strong>问题2：</strong>NSTimer 对于 target 的循环引用问题：</p>
+</blockquote>
+<p>以下代码很常见：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">CADisplayLink *_link = [CADisplayLink displayLinkWithTarget:self selector:@selector(tick:)];</div><div class="line"></div><div class="line">    [NSTimer timerWithTimeInterval:1.f target:self selector:@selector(tick:) userInfo:nil repeats:YES];</div></pre></td></tr></table></figure></p>
+<p>—— 原因：以上两种用法，都会对self强引用，此时 timer持有 self，self 也持有 timer，循环引用导致页面 dismiss 时，双方都无法释放，造成循环引用。<br>此时使用 __weak 也不能有效解决:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">    __weak typeof(self) weakSelf = self;</div><div class="line">    _link = [CADisplayLink displayLinkWithTarget:weakSelf selector:@selector(tick:)];</div></pre></td></tr></table></figure></p>
+<p>效果如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/332029-6b2957fc2ff9cc8b.gif?imageMogr2/auto-orient/strip" alt=""></p>
+<p><strong>可以看到 页面 dismiss 后，计时器仍然在打印</strong></p>
+<p><strong>—— 解决办法：1、</strong>在页面退出前，或者合适的时候，手动停止 timer，结束循环引用。</p>
+<p>注意：在 dealloc 方法中是肯定不行的！由于循环引用，dealloc 方法不会进。<br><img src="http://upload-images.jianshu.io/upload_images/332029-90b68a2f2381e4f0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p><strong>——解决办法：2、</strong>YYFPSLabel 作者提供的 <a href="https://github.com/yehot/YYFPSLabel/blob/master/YYFPSLabel/YYFPSLabel/YYWeakProxy.m" target="_blank" rel="external">YYWeakProxy</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@interface YYWeakProxy : NSProxy</div><div class="line">@end</div><div class="line"></div><div class="line">// 使用方式：</div><div class="line">    _link = [CADisplayLink displayLinkWithTarget:[YYWeakProxy proxyWithTarget:self] selector:@selector(tick:)];</div></pre></td></tr></table></figure>
+<p>代码很少，有兴趣可以自己看下源码。<br><strong>Tips：</strong> OC中 NSProxy 是不继承自 NSObject 的。</p>
+<p>###3、探索环节：iOS中子线程检测主线程</p>
+<blockquote>
+<p>在和小伙伴分享这个小工具的时候，潘神抛出了这样一个<strong>问题</strong>：<br>这里组件是在主线程绘制的label，如果主线程阻塞了还能用吗？</p>
+</blockquote>
+<p>结果是不能。</p>
+<p>####以下是探索阶段：</p>
+<p>1、模拟主线程阻塞，将 link 放在子线程，发现 timer 不能启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">    // 模拟 主线程阻塞 （不应该模拟主线程卡死，模拟卡顿即可）</div><div class="line">    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;  </div><div class="line">        NSLog(@&quot;即将阻塞&quot;);</div><div class="line">        dispatch_sync(dispatch_get_main_queue(), ^&#123;</div><div class="line">            NSLog(@&quot;同步阻塞主线程&quot;);</div><div class="line">        &#125;);</div><div class="line">        NSLog(@&quot;不会执行&quot;);</div><div class="line">    &#125;);</div></pre></td></tr></table></figure>
+<p>2、使用CFRunLoopAddObserver检测主线程是否卡顿：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//将观察者添加到主线程runloop的common模式下的观察中</div><div class="line">CFRunLoopAddObserver(CFRunLoopGetMain(), runLoopObserver, kCFRunLoopCommonModes);</div></pre></td></tr></table></figure>
+<p>这里是能检测到主线程是否卡顿了，但是 timer 在子线程中还是跑不起来。</p>
+<p>参考 <a href="https://www.google.com.hk/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;ved=0ahUKEwjx0Zjw4_fLAhWVj44KHdkUAvwQFggbMAA&amp;url=%68%74%74%70%3a%2f%2f%77%77%77%2e%73%74%61%72%6d%69%6e%67%2e%63%6f%6d%2f&amp;usg=AFQjCNF2xjShwXV0aXfKo1yXQHN95DRCAA&amp;sig2=C_ywHG5vt8byOOqA6x-bOw" target="_blank" rel="external">Starming星光社</a> 的 <a href="http://www.starming.com/index.php?v=index&amp;view=91" target="_blank" rel="external">检测iOS的APP性能的一些方法</a></p>
+<p>3、在子线程手动创建一个 runloop，提供给 timer。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">    dispatch_async(dispatch_get_global_queue(0, 0), ^&#123;</div><div class="line">        _link = [CADisplayLink displayLinkWithTarget:self selector:@selector(tick:)];</div><div class="line">        // NOTE: 子线程的runloop默认不创建； 在子线程获取 currentRunLoop 对象的时候，就会自动创建RunLoop</div><div class="line">        // 这里不加到 main loop，必须创建一个 runloop</div><div class="line">        NSRunLoop *runloop = [NSRunLoop currentRunLoop];</div><div class="line">        [_link addToRunLoop:runloop forMode:NSRunLoopCommonModes];</div><div class="line">        // 必须 timer addToRunLoop 后，再run</div><div class="line">        [runloop run];</div><div class="line">    &#125;);</div></pre></td></tr></table></figure></p>
+<p>这样，就可以在子线程中使用 timer 了，但是此时只能 log，无法获通知主线程更新UI： (这里先不在主线程更新UI了)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">// 尝试1：主线程阻塞， 这里就不能获取到主线程了</div><div class="line">//    dispatch_async(dispatch_get_main_queue(), ^&#123;</div><div class="line">//        阻塞时，想通过 在主线程更新UI 来查看是不可行了</div><div class="line">//        label_.text = text;</div><div class="line">//    &#125;);</div><div class="line">    </div><div class="line">    // 尝试2：不在主线程操作 UI ，界面会发生变化</div><div class="line">    label_.text = text;</div></pre></td></tr></table></figure></p>
+<p>参考: <a href="http://www.jianshu.com/p/37ab0397fec7" target="_blank" rel="external">【iOS程序启动与运转】- RunLoop个人小结</a></p>
+<p>以上是学习 YYFPSLabel 时的收获，和对于在子线程中检测主线程的探索。详情可以戳代码：<br><strong><a href="https://github.com/yehot/YYFPSLabel" target="_blank" rel="external">YYFPSLabel</a></strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/29/20151129-project-contents/" rel="next" title="iOS工程目录结构的思考">
+                <i class="fa fa-chevron-left"></i> iOS工程目录结构的思考
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/31/20160531-ios-module-investigation/" rel="prev" title="iOS组件化方案调研">
+                iOS组件化方案调研 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.JPG"
+               alt="yehot" />
+          <p class="site-author-name" itemprop="name">yehot</p>
+           
+              <p class="site-description motion-element" itemprop="description">野生iOS程序猿</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yehot" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/d0002bd5b272" target="_blank" title="简书">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  简书
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="[object Object]" title="0" target="_blank">0</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yehot</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
