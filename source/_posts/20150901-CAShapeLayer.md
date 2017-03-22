@@ -1,7 +1,8 @@
 ---
 title: CAShapeLayer 实现圆形图片加载动画
 date: 2015-09-01 22:06:30
-tags:
+tags: CALayer
+categories: Animation
 ---
 
 > 原文链接 :[How To Implement A Circular Image Loader Animation with CAShapeLayer](https://www.raywenderlich.com/94302/implement-circular-image-loader-animation-cashapelayer)

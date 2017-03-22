@@ -1,7 +1,8 @@
 ---
 title: iOS组件化方案调研
 date: 2016-05-31 14:01:10
-tags: module
+tags: CocoaPods
+categories: iOS组件化
 ---
 
 # iOS组件化方案探索

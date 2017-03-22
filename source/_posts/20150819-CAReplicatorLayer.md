@@ -1,7 +1,8 @@
 ---
 title: CAReplicatorLayer 创建炫酷动画
 date: 2015-08-19 21:56:39
-tags:
+tags: CALayer
+categories: Animation
 ---
 
 

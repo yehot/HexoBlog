@@ -1,7 +1,8 @@
 ---
 title: Git常用命令清单
 date: 2017-02-15 22:33:01
-tags: git
+tags: Git
+categories: Tool
 ---
 
 ![目录](http://upload-images.jianshu.io/upload_images/332029-53b2e99ec9b33e76.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)

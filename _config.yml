@@ -3,11 +3,11 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: yehot
-subtitle: 野生iOS程序猿
-description: https://github.com/yehot
+title: yehot 的技术博客
+subtitle:
+description: 野生iOS程序猿
 author: yehot
-language: zh-CN
+language: zh-Hans
 timezone:
 
 # custome set
@@ -92,7 +92,7 @@ pagination_dir: page
 ## Plugins: https://hexo.io/plugins/
 ## 当前 themen: https://github.com/tufu9441/maupassant-hexo.git
 ## 参考： https://www.haomwei.com/technology/maupassant-hexo.html#功能配置
-theme: maupassant
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html

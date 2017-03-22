@@ -1,7 +1,8 @@
 ---
 title: iOS查看屏幕帧数工具--YYFPSLabel
 date: 2016-04-05 23:23:36
-tags: YYFPSLabel
+tags:
+categories: Tool
 ---
 
 学习 **[YYKit](https://github.com/ibireme/YYKit)** 代码时，发现 [ibireme](https://github.com/ibireme) 在项目里加入的一个查看当前屏幕帧数的小工具，效果如下：
@@ -76,7 +77,8 @@ tags: YYFPSLabel
 ####以下是探索阶段：
 
 1、模拟主线程阻塞，将 link 放在子线程，发现 timer 不能启动
-```
+
+```OC
     // 模拟 主线程阻塞 （不应该模拟主线程卡死，模拟卡顿即可）
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{  
         NSLog(@"即将阻塞");

@@ -1,7 +1,8 @@
 ---
 title: iOS工程目录结构的思考
 date: 2015-11-29 14:18:43
-tags:
+tags: CocoaPods
+categories: iOS组件化
 ---
 
 #一、前言

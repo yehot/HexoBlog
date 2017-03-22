@@ -2,6 +2,7 @@
 title: 自定义可配置开关的NSLog
 date: 2015-09-09 21:55:34
 tags:
+categories: Tool
 ---
 
 #自定义可配置开关的NSLog

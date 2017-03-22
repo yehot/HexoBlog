@@ -1,7 +1,8 @@
 ---
 title: 新浪云搭建简单的 Node.js Web 应用
 date: 2016-12-18 00:43:45
-tags: node.js node web sina
+tags: node.js
+categories: Node.js
 ---
 
 > 阅读本文前，需要对 node.js 、npm、常用 Git 操作、express 有基本的掌握
