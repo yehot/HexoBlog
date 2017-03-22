@@ -18,7 +18,7 @@ busuanzi: true ## If you want to use Busuanzi page views please set the value to
 widgets_on_small_screens: false ## Set to true to enable widgets on small screens.
 
 # Theme version
-version: 0.0.0  ## 主题版本，便于静态文件更新后刷新CDN缓存
+version: 5.1.0  ## 主题版本，便于静态文件更新后刷新CDN缓存
 
 # 侧边栏小工具
 widgets: ## Six widgets in sidebar provided: search, category, tag, recent_posts, rencent_comments and links.
