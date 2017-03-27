@@ -282,12 +282,182 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yehot.github.io/2017/03/27/20170326-sina-blog-spider/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="yehot">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yehot 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/27/20170326-sina-blog-spider/" itemprop="url">
+                  Python新浪博客爬虫：sina-blog-spider
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-27T20:38:08+08:00">
+                2017-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>大学的时候用新浪写了4年的流水账 blog，某天突然翻到，感慨还是留了不少记忆在里边的，就想着要不迁移或者备份下。搜了一圈发现了 <a href="https://github.com/bfishadow/SBB" target="_blank" rel="external">bfishadow/SBB</a> 这个 Python 写的备份工具，试用了下还不错。刚好借着这个机会学习一下 Python 和爬虫。</p>
+</blockquote>
+<p>在学习代码的过程中，自己也敲了一遍，发现了一些问题：不支持 Python3.x，代码可读性太差。代码敲完了发现，作者原来不是程序员啊我摔！被坑了（代码实在太烂了，差点摧毁我对 Python 的认知）。</p>
+<p>所以特意花了一下午时间对代码进行了一个重写：</p>
+<h3 id="新特性："><a href="#新特性：" class="headerlink" title="新特性："></a>新特性：</h3><ul>
+<li>适配 Python3.x；</li>
+<li>进行了封装、重构，提高代码可读性；</li>
+<li>添加了踩坑注释；</li>
+<li>吐槽归吐槽，原 po 思路还是非常赞的，鸣谢 @bfishadow；</li>
+</ul>
+<h3 id="功能简介"><a href="#功能简介" class="headerlink" title="功能简介"></a>功能简介</h3><ul>
+<li>用于下载并归档指定新浪博客作者全部文章的 Python 脚本；</li>
+<li>抓取后整理生成本地 html 文件，以及一个 indxe 入口；</li>
+<li>支持到 Python3.x</li>
+<li>源码戳 <a href="https://github.com/yehot/sina-blog-spider" target="_blank" rel="external">sina-blog-spider</a></li>
+</ul>
+<h3 id="Usage"><a href="#Usage" class="headerlink" title="Usage:"></a>Usage:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 排序开关是可选的，默认为按发表时间顺序排列（即 asc）</span></div><div class="line">$ sina_blog_crawler.py http://blog.sina.com.cn/gongmin desc</div><div class="line">$ sina_blog_crawler.py http://blog.sina.com.cn/u/<span class="number">1239657051</span></div></pre></td></tr></table></figure>
+<h3 id="TODO"><a href="#TODO" class="headerlink" title="TODO:"></a>TODO:</h3><ul>
+<li>[ ] 添加可选参数：指定抓取页数支持</li>
+<li>[ ] 网络库从 urllib 替换为 requests</li>
+<li>[ ] 字符串匹配改用正则</li>
+<li>[ ] 不够 Pythonic，优化编码规范</li>
+</ul>
+<h3 id="DEMO"><a href="#DEMO" class="headerlink" title="DEMO:"></a>DEMO:</h3><blockquote>
+<p>万万没想到韩寒 17 年还有两篇博客，试爬了一下韩寒的 10 篇 blog，效果如图：</p>
+</blockquote>
+<p><img src="http://ob7o39x9f.bkt.clouddn.com/2017-03-27-Untitled1.gif" alt="sinaa-demo"></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yehot.github.io/2017/02/15/20170215-git-order-list/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="yehot">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -471,7 +641,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="yehot">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -677,7 +847,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="yehot">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -879,7 +1049,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="yehot">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1149,7 +1319,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="yehot">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1332,7 +1502,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="yehot">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1547,7 +1717,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="yehot">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1748,7 +1918,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="yehot">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1913,7 +2083,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="yehot">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -2048,162 +2218,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yehot.github.io/2015/08/19/20150819-CAReplicatorLayer/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="yehot">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yehot 的技术博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/08/19/20150819-CAReplicatorLayer/" itemprop="url">
-                  CAReplicatorLayer 创建炫酷动画
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-19T21:56:39+08:00">
-                2015-08-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Animation/" itemprop="url" rel="index">
-                    <span itemprop="name">Animation</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>使用CAReplicatorLayer创建以下动画效果:</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/332029-0c58f125ff1e1708.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240/q/100" alt=""></p>
-<p>CAReplicatorLayerz 使用：</p>
-<ul>
-<li>作为子 Layer 添加到容器 Layer;</li>
-<li>可以复制若干份；</li>
-<li>可以设定子Layer复制份数、设定副本之间的距离、透明度、颜色、旋转、位置等状态属性;</li>
-<li>动画效果的性能较好，内存使用低;</li>
-</ul>
-<p><a href="http://www.jianshu.com/p/76c588893b19?utm_campaign=hugo" target="_blank" rel="external">原文链接</a></p>
-<blockquote>
-<p>这里是将原译者的代码翻译成 OC 版本实现了一遍，添加了详细的注释：</p>
-</blockquote>
-<p><a href="https://github.com/yehot/CAReplicatorLayerDemo" target="_blank" rel="external">戳这里</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2241,7 +2255,7 @@
       <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
-               src="/images/avatar.JPG"
+               src="/images/avatar.png"
                alt="yehot" />
           <p class="site-author-name" itemprop="name">yehot</p>
            
@@ -2253,7 +2267,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2264,7 +2278,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2275,7 +2289,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
