@@ -1,7 +1,8 @@
 # 手动发布更新到 github 仓库
 # 而非使用 hexo d 发布 (后者不能添加 git log)
 
-hexo generate
+# 生成静态文件
+hexo g
 
 echo "请输入 git log 信息: "
 
@@ -16,3 +17,5 @@ git commit -m "${GitLogMessage}"
 git push origin master
 
 echo "===== blog 发布成功 ====="
+
+hexo d

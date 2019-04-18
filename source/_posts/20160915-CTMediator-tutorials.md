@@ -1,5 +1,5 @@
 ---
-title:Target-Action 实现组件解耦 —— CTMediator使用教程
+title: Target-Action 实现组件解耦 —— CTMediator使用教程
 date: 2016-09-15 14:20:28
 tags: CocoaPods
 categories: iOS组件化
