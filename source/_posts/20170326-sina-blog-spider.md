@@ -43,7 +43,4 @@ $ sina_blog_crawler.py http://blog.sina.com.cn/u/1239657051
 
 > 万万没想到韩寒 17 年还有两篇博客，试爬了一下韩寒的 10 篇 blog，效果如图：
 
-![sinaa-demo](http://ob7o39x9f.bkt.clouddn.com/2017-03-27-Untitled1.gif)
-
-
-
+![sina-demo](https://upload-images.jianshu.io/upload_images/332029-bd965150a0c3fdf3.gif)
