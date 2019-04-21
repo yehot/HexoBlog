@@ -8,7 +8,7 @@ tags: iOS
 
 ![SDWebImage时序图](https://upload-images.jianshu.io/upload_images/332029-5fb37890ad0348d4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-markdown 源码如下：
+markdown 源码如下:
 
 ```mermaid
 sequenceDiagram
