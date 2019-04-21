@@ -9,7 +9,6 @@ categories: iOS组件化
 
 ![](http://upload-images.jianshu.io/upload_images/332029-76f5038a773b7863.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-
 >**目录：**
      > - 从一个bug说起
      > - 分析需求及解决方案

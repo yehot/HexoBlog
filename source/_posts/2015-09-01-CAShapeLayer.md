@@ -16,10 +16,7 @@ categories: Animation
 
 效果如下：
 
-
 ![](http://upload-images.jianshu.io/upload_images/332029-ca6768881f0529a5.gif?imageMogr2/auto-orient/strip)
 
 代码及注释：
 [戳这里](https://github.com/yehot/CircularImageLoder)
-
-

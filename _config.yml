@@ -28,6 +28,7 @@ widgets: ## Six widgets in sidebar provided: search, category, tag, recent_posts
   # - recent_posts
   # - recent_comments
   # - links
+sidebar:
 
 # 友情链接
 links:

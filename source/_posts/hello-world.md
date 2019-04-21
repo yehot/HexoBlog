@@ -2,38 +2,45 @@
 title: Hello World
 date: 2015-02-15 22:33:01
 ---
+
+# HexoBlog
+
 Welcome to [Hexo](https://hexo.io/)! This is your very first post. Check [documentation](https://hexo.io/docs/) for more info. If you get any problems when using Hexo, you can find the answer in [troubleshooting](https://hexo.io/docs/troubleshooting.html) or you can ask me on [GitHub](https://github.com/hexojs/hexo/issues).
 
-## Quick Start
+## Hexo Doc
 
-### Create a new post
+https://hexo.io/zh-cn/docs/server
 
-``` bash
-$ hexo new "My New Post"
+## Usage
+
+本地预览：
+
+```
+hexo s
+hexo server
 ```
 
-More info: [Writing](https://hexo.io/docs/writing.html)
+新建一篇文章
 
-### Run server
-
-``` bash
-$ hexo server
+```
+hexo n "title"
+hexo new "post title with whitespace"
 ```
 
-More info: [Server](https://hexo.io/docs/server.html)
+生成静态文件
 
-### Generate static files
-
-``` bash
-$ hexo generate
+```
+hexo g
+hexo generate
 ```
 
-More info: [Generating](https://hexo.io/docs/generating.html)
+部署网站
 
-### Deploy to remote sites
-
-``` bash
-$ hexo deploy
+```
+hexo d
+hexo deploy
 ```
 
-More info: [Deployment](https://hexo.io/docs/deployment.html)
+## 当前主题 Anatole
+
+https://github.com/Ben02/hexo-theme-Anatole/wiki/Installation
