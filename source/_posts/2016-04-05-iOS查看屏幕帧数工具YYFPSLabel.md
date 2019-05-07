@@ -4,6 +4,8 @@ date: 2016-04-05 23:23:36
 tags: iOS
 categories: Tool
 ---
+<meta name="referrer" content="no-referrer" />
+
 学习 **[YYKit](https://github.com/ibireme/YYKit)** 代码时，发现 [ibireme](https://github.com/ibireme) 在项目里加入的一个查看当前屏幕帧数的小工具，效果如下：
 
 ![](http://upload-images.jianshu.io/upload_images/332029-36fb1bdbfb423531.gif?imageMogr2/auto-orient/strip)

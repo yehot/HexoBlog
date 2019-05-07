@@ -4,6 +4,7 @@ date: 2015-08-19 21:56:39
 tags: CALayer
 categories: Animation
 ---
+<meta name="referrer" content="no-referrer" />
 
 使用CAReplicatorLayer创建以下动画效果:
 

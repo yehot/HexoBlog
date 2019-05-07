@@ -4,6 +4,7 @@ date: 2015-11-28 16:02:56
 tags: CocoaPods
 categories: iOS组件化
 ---
+<meta name="referrer" content="no-referrer" />
 
 **为什么iOS项目中应该使用CocoaPods作为第三方依赖管理工具？**
 

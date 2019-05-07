@@ -4,6 +4,7 @@ date: 2015-09-01 22:06:30
 tags: CALayer
 categories: Animation
 ---
+<meta name="referrer" content="no-referrer" />
 
 > 原文链接 :[How To Implement A Circular Image Loader Animation with CAShapeLayer](https://www.raywenderlich.com/94302/implement-circular-image-loader-animation-cashapelayer)
 > 原文作者 :Rounak Jain
