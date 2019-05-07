@@ -5,8 +5,11 @@ tags: iOS
 description: 
 ---
 <meta name="referrer" content="no-referrer" />
+<!-- toc -->
 
-## 整理了一下 SDWebImage 的时序图：
+## SDWebImage 时序图：
+
+整理了一下 SDWebImage 的时序图：
 
 ![SDWebImage时序图](https://upload-images.jianshu.io/upload_images/332029-5fb37890ad0348d4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
@@ -56,7 +59,7 @@ sequenceDiagram
         deactivate UIImageView(WebCache) 
 ```
 
-## 源码思维导图
+## SDWebImage 源码思维导图
 
 这个思维导图来自 @雷纯锋 的一篇源码解析，整理得非常细致，推荐：
 

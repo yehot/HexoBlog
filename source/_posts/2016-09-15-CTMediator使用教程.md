@@ -3,8 +3,10 @@ title: Target-Action 实现组件解耦 —— CTMediator使用教程
 date: 2016-09-15 14:20:28
 tags: CocoaPods
 categories: iOS组件化
+description: 
 ---
 <meta name="referrer" content="no-referrer" />
+<!-- toc -->
 
 > 在 [iOS组件化方案调研](http://www.jianshu.com/p/34f23b694412) 这篇中，对组件化的应用场景和实现方式做了简单的调研。最终在项目中采用的是 casa 的 `CTMediator` 这套方案。以下是CTMediator 的一个简单的使用教程。
 

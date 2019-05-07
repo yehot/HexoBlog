@@ -2,8 +2,10 @@
 title: runtime 获取 SDK 的私有类信息
 date: 2017-09-09 14:27:22
 tags: iOS runtime
+description: 
 ---
 <meta name="referrer" content="no-referrer" />
+<!-- toc -->
 
 近期的一个项目里，我们自己开发的埋点模块和友盟 SDK 在兼容上发生了点问题，定位问题的过程中，想看看友盟 SDK 里有哪些类，但是友盟 SDK 只提供了 3 个 public header：
 
@@ -313,6 +315,8 @@ class method[4] ---- startWithAppkey:reportPolicy:channelId:
 class method[5] ---- startWithAppkey:
 class method[6] ---- sharedInstance
 ```
-### [Demo 戳这里](https://github.com/yehot/RunTime-Practise)
+### Demo
+
+[Demo 戳这里](https://github.com/yehot/RunTime-Practise)
 
 注：runtime 的方案，无法打印出 SDK 里的 Category 类

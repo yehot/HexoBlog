@@ -4,20 +4,16 @@ date: 2015-11-28 16:02:56
 tags: CocoaPods
 categories: iOS组件化
 ---
+
 <meta name="referrer" content="no-referrer" />
+<!-- toc -->
 
 **为什么iOS项目中应该使用CocoaPods作为第三方依赖管理工具？**
 
 ![](http://upload-images.jianshu.io/upload_images/332029-76f5038a773b7863.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
->**目录：**
-     > - 从一个bug说起
-     > - 分析需求及解决方案
-     > - 确定方案
-     > - CocoaPods学习资料
 
-
-#一、从一个bug说起：
+## 一、从一个bug说起：
 1、公司的项目里统一使用SVG格式的图片；
 2、GitHub上只有一个star数超过一千的SVG解析库，叫SVGKit。（对，就是这个坑爹的库）
          **坑1：** 这个库一直使用非ARC，有100多个类；</a>
@@ -33,14 +29,14 @@ categories: iOS组件化
 
 4、因为用的源码，项目里的SVGKit版本很久都不会更新。导致在iPhone6S以上设备时，由于旧版本的库没有适配6S，必崩。现在必须要更新到这个库的最新版本。
 
-#**二、解决方案的探索：**
-##方案一：
+## 二、解决方案的探索:
+### 方案一：
 >**用最新源码替换掉旧版源码文件**
   问题：1、类文件太多，麻烦，容易出错；
      2、还是会有大量的 -fno-objc-arc 标记，很烦；
        结论：**否决**
 
-##方案二：
+### 方案二：
 >**SVGKit作者推荐——静态库**（该库的GitHub页面也只介绍了这一种用法）
   问题：1、只有.h 头文件，出错没法定位和修改。
      2、静态库里使用了category必须要加 -ObjC 标记。
@@ -58,14 +54,15 @@ categories: iOS组件化
 
     有任何一个target忘了设置，就又埋了个坑。
   3、关于 **为什么要加 -ObjC 标记** 的问题，以前是有查过资料的，这里完全是因为target太多遗漏导致的。
->####笔记如下：  
+
+#### 笔记如下：  
 **-ObjC 标记的作用:**
      > - 用到一个第三方库，这个库的使用向导里面特别说明，在添加完该库后，需要在Xcode的Build Settings下Other Linker Flags里面加入-ObjC标志。之所以使用该标志，和Objective-C的一个重要特性：类别（category)有关。根据[这里](https://developer.apple.com/library/mac/qa/qa1490/_index.html)的解释，Unix的标准静态库实现和Objective-C的动态特性之间有一些冲突：Objective-C没有为每个函数（或者方法）定义链接符号，它只为每个类创建链接符号。
 > - 这样当在一个静态库中使用类别来扩展已有类的时候，链接器不知道如何把类原有的方法和类别中的方法整合起来，就会导致你调用类别中的方法时，出现"selector not recognized"，也就是找不到方法定义的错误。
 > - 为了解决这个问题，引入了-ObjC标志，它的作用就是将静态库中所有的和对象相关的文件都加载进来。
 > - 本来这样就可以解决问题了，不过在64位的Mac系统或者iOS系统下，链接器有一个bug，会导致只包含有类别的静态库无法使用-ObjC标志来加载文件。变通方法是使用-all_load 或者-force_load标志，它们的作用都是加载静态库中所有文件，不过all_load作用于所有的库，而-force_load后面必须要指定具体的文件。
 
-##方案三：
+### 方案三：
 >**使用 CocoaPods **
 问题：作者没有说明这个库**是否支持CocoaPods**
    这也是我最开始没有考虑改用 CocoaPods 的原因）
@@ -92,15 +89,14 @@ categories: iOS组件化
   ```$ pod update```
 结论：**就是这个了！**
 
-#确定方案
-> CocoaPods 一劳永逸的解决了第三方库版本升级的问题。
 
-#就酱~
+## CocoaPods 资料
 
-#干货部分
->CocoaPods学习资料
+### 官方文档
 
-####CocoaPods入门：
+https://guides.cocoapods.org
+
+### CocoaPods入门：
 1、[CocoaPods安装和使用教程](http://code4app.com/article/cocoapods-install-usage)
 （入门看这一篇就够了）
 2、CocoaPods pod install/pod update**更新慢的问题**
@@ -122,7 +118,7 @@ pod update --verbose --no-repo-update
 （可以设置ignore）
 ![](http://upload-images.jianshu.io/upload_images/332029-4e55d2d3a6b9d29f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-###CocoaPods高阶用法：
+### CocoaPods高阶用法：
 
 1、[即使你不使用第三方库，CocoaPods仍然是一个管理代码相关性的绝佳工具](
      http://nshipster.cn/cocoapods/#%E4%BD%BF%E7%94%A8cocoapods)

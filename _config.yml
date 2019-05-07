@@ -109,3 +109,15 @@ archive_generator:
   yearly: false
   monthly: false
   daily: false
+
+# toc 插件
+# slugify: transliteration
+toc:
+  maxdepth: 3
+  class: toc
+  slugify: false
+  decodeEntities: false
+  anchor:
+    position: after
+    symbol: ' '
+    style: header-anchor
