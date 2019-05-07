@@ -56,7 +56,7 @@ sequenceDiagram
 
 ## 源码思维导图
 
-这个思维导图是以前在某篇源码分析里看到的，忘了原作者是谁了…整理得非常细致，推荐：
+这个思维导图来自 @雷纯锋 的一篇源码解析，整理得非常细致，推荐：
 
 ![SDWebImage](https://upload-images.jianshu.io/upload_images/332029-2aef2d6a91bb8928.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
