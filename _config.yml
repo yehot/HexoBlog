@@ -13,7 +13,7 @@ timezone:
 # custome set
 google_search: true ## Use Google search, true/false.
 ## 使用不蒜子页面访问计数
-busuanzi: true ## If you want to use Busuanzi page views please set the value to true.
+# busuanzi: true ## If you want to use Busuanzi page views please set the value to true.
 ## 是否在移动设备屏幕底部显示侧边栏
 widgets_on_small_screens: false ## Set to true to enable widgets on small screens.
 
@@ -46,7 +46,7 @@ root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 
-# Directory
+# 目录
 source_dir: source
 public_dir: public
 tag_dir: tags
@@ -113,7 +113,7 @@ archive_generator:
 # toc 插件
 # slugify: transliteration
 toc:
-  maxdepth: 3
+  maxdepth: 4
   class: toc
   slugify: false
   decodeEntities: false

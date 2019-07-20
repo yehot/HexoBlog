@@ -13,7 +13,19 @@ description:
 
 ![SDWebImage时序图](https://upload-images.jianshu.io/upload_images/332029-5fb37890ad0348d4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-markdown 源码如下:
+从时序图可以看到，SDWebImage 的核心逻辑，其实也特别简单:
+
+1、入口是调用 UIImageView 的 `sd_setImageWithURL`，
+这个方法是 UIImageView 的 Category (WebCache) 提供；
+2、然后调用到 UIView 的 Category 里，原因是不止给 UIImageView 提供扩展，还有 UIButton 等；
+3、再调用到 SDWebImageManager 这个单例里，manager 再调用 SDImageCache 单例去内存查找缓存，没有找到再去 磁盘查找缓存；
+4、如果都没有，manager 调用 SDWebImageDownloader 这个单例，创建一个 SDWebImageDownloaderOperation 这个 NSOperation 的子类，去开启下载任务；
+- SDWebImageDownloader 里用一个 dict 缓存了所有开启的下载 Operation，避免重复创建下载动作；
+- 并持有 NSOperationQueue 用于启动 operation
+5、如果 operation 下载成功，会将数据通过 block 回调给 SDWebImageDownloader，再传给 SDWebImageManager，manager 会先讲数据返回给 UIImageView 界面；然后，调用 SDImageCache 去缓存数据到内存和磁盘
+
+
+时序图的 markdown 源码如下:
 
 ```mermaid
 sequenceDiagram
